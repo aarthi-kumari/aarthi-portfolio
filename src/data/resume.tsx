@@ -219,6 +219,7 @@ export const DATA = {
     image?: string;
     links?: Array<{
       type: string;
+      title: string;
       href: string;
       icon?: React.ReactNode;
     }>;
