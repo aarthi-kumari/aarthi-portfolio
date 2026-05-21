@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { motion, type MotionValue, useMotionValue, useSpring, useTransform } from "motion/react";
-import { createContext, useContext, useRef, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 
 interface DockProps {
   className?: string;
@@ -14,6 +14,7 @@ interface DockProps {
 interface DockIconProps {
   className?: string;
   children?: ReactNode;
+  fixedSize?: boolean;
 }
 
 const DEFAULT_MAGNIFICATION = 60;
@@ -27,18 +28,46 @@ interface DockContextValue {
   mouseX: MotionValue<number>;
   magnification: number;
   distance: number;
+  resetMouseX: () => void;
 }
 
-const DockContext = createContext<DockContextValue | null>(null);
+export const DockContext = createContext<DockContextValue | null>(null);
 
 const Dock = ({ className, children, magnification = DEFAULT_MAGNIFICATION, distance = DEFAULT_DISTANCE }: DockProps) => {
   const mouseX = useMotionValue(Infinity);
+  const [canHover, setCanHover] = useState(false);
+  const resetMouseX = () => {
+    mouseX.set(Infinity);
+  };
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
+
+    const updateCanHover = () => {
+      setCanHover(mediaQuery.matches);
+    };
+
+    updateCanHover();
+    mediaQuery.addEventListener("change", updateCanHover);
+
+    return () => {
+      mediaQuery.removeEventListener("change", updateCanHover);
+    };
+  }, []);
 
   return (
-    <DockContext.Provider value={{ mouseX, magnification, distance }}>
+    <DockContext.Provider value={{ mouseX, magnification, distance, resetMouseX }}>
       <motion.div
-        onMouseMove={(e) => mouseX.set(e.pageX)}
-        onMouseLeave={() => mouseX.set(Infinity)}
+        onMouseMove={(e) => {
+          if (canHover) {
+            mouseX.set(e.pageX);
+          }
+        }}
+        onMouseLeave={() => {
+          if (canHover) {
+            resetMouseX();
+          }
+        }}
         className={cn("mx-auto w-max h-full flex items-end justify-center overflow-visible rounded-full border", className)}
       >
         {children}
@@ -47,7 +76,7 @@ const Dock = ({ className, children, magnification = DEFAULT_MAGNIFICATION, dist
   );
 };
 
-const DockIcon = ({ className, children }: DockIconProps) => {
+const DockIcon = ({ className, children, fixedSize = false }: DockIconProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const context = useContext(DockContext);
 
@@ -74,11 +103,14 @@ const DockIcon = ({ className, children }: DockIconProps) => {
   return (
     <motion.div
       ref={ref}
-      style={{ width: containerSize, height: containerSize }}
+      style={{
+        width: fixedSize ? BASE_SIZE : containerSize,
+        height: fixedSize ? BASE_SIZE : containerSize,
+      }}
       className={cn("relative flex aspect-square items-center justify-center rounded-full shrink-0", className)}
     >
       <motion.div
-        style={{ width: iconSize, height: iconSize }}
+        style={{ width: fixedSize ? BASE_ICON_SIZE : iconSize, height: fixedSize ? BASE_ICON_SIZE : iconSize }}
         className="flex items-center justify-center"
       >
         {children}

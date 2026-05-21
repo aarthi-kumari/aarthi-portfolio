@@ -120,6 +120,16 @@
     @apply bg-background text-foreground;
   }
 
+  @media (hover: none) and (pointer: coarse) {
+    a,
+    button,
+    [role="button"],
+    [type="button"],
+    [type="submit"] {
+      cursor: default !important;
+    }
+  }
+
   /* Shiki dual theme support */
   .shiki,
   .shiki span {
