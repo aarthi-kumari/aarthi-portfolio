@@ -23,7 +23,11 @@ export const DATA = {
     "Computer Science undergraduate specializing in AI & Machine Learning. Passionate about building scalable backend systems, developer tools, and intelligent applications.",
 
   summary:
-    "Computer Science undergraduate specializing in Artificial Intelligence and Machine Learning with hands-on experience building full-stack and backend systems using Java, Python, and TypeScript. Strong foundation in Data Structures, Algorithms, and relational database design. I enjoy building developer tools, AI-driven applications, and scalable backend systems. Currently seeking opportunities as a Software Engineering Intern or Fresher to contribute to impactful real-world software.",
+    `Computer Science undergraduate specializing in Artificial Intelligence and Machine Learning, with hands-on experience building full-stack and backend systems using Java, Python, and TypeScript. Strong foundation in Data Structures and Algorithms — solved 280+ problems on LeetCode.
+
+I enjoy building developer tools, AI-driven applications, and scalable backend systems. My recent work spans an AI workflow automation SaaS, a real-time AI meeting assistant, and an AI-powered invoicing platform for GST/IRN workflows- each built end-to-end as solo projects.
+
+I'm drawn to problems at the intersection of AI and developer tooling, where good engineering and useful products meet.`,
 
   avatarUrl: "/Aarthi-pic.png",
 
@@ -39,7 +43,6 @@ export const DATA = {
     { name: "FastAPI", icon: Python },
     { name: "Prisma", icon: Typescript },
     { name: "PostgreSQL", icon: Postgresql },
-    { name: "TimescaleDB", icon: Postgresql },
     { name: "Firebase", icon: Nodejs },
     { name: "Google Maps API", icon: Nodejs },
     { name: "Recharts", icon: ReactLight },
@@ -159,7 +162,7 @@ export const DATA = {
       dates: "2025",
       active: true,
       description:
-        "Full-stack invoicing platform with client management, invoice lifecycle tracking, and payment status. Built with a normalized relational schema and REST APIs.",
+        "An AI-powered invoicing platform built for GST-compliant e-invoice workflows. Supports natural language interaction for invoice generation, client management, and IRN lifecycle tracking — backed by a normalized relational schema and REST APIs.",
       technologies: [
         "Next.js",
         "Prisma",
