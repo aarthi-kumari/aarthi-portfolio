@@ -25,7 +25,7 @@ export const DATA = {
   summary:
     "Computer Science undergraduate specializing in Artificial Intelligence and Machine Learning with hands-on experience building full-stack and backend systems using Java, Python, and TypeScript. Strong foundation in Data Structures, Algorithms, and relational database design. I enjoy building developer tools, AI-driven applications, and scalable backend systems. Currently seeking opportunities as a Software Engineering Intern or Fresher to contribute to impactful real-world software.",
 
-  avatarUrl: "/aarthi.jpeg",
+  avatarUrl: "/Aarthi-pic.png",
 
   skills: [
     { name: "Java", icon: Java },
@@ -124,31 +124,34 @@ export const DATA = {
   ],
 
   projects: [
+  {
+  title: "Nodebase - AI Workflow Automation SaaS",
+  href: "https://github.com/aarthi-kumari/nodebase",
+  dates: "2026",
+  active: true,
+  description:
+    "A full-stack AI workflow automation SaaS that lets users visually build, connect, and automate multi-step workflows powered by AI nodes, with billing and background job processing.",
+  technologies: [
+    "Next.js 15",
+    "tRPC",
+    "Prisma",
+    "PostgreSQL",
+    "Vercel AI SDK",
+    "Inngest",
+    "better-auth",
+    "Polar",
+  ],
+  links: [
     {
-      title: "Tracer - Mini Observability Platform",
-      href: "https://github.com/aarthi-kumari/tracerWebApp",
-      dates: "2025",
-      active: true,
-      description:
-        "A lightweight observability platform that collects application logs via HTTP APIs and processes them in real time for monitoring and anomaly detection.",
-      technologies: [
-        "Python",
-        "FastAPI",
-        "TimescaleDB",
-        "PostgreSQL",
-        "Composio",
-      ],
-      links: [
-        {
-          type: "Source",
-          href: "https://github.com/aarthi-kumari/tracerWebApp",
-          icon: <Icons.github className="size-3" />,
-        },
-      ],
-      image: "",
-      images: [],
-      video: "",
+      type: "Source",
+      href: "https://github.com/aarthi-kumari/nodebase",
+      icon: <Icons.github className="size-3" />,
     },
+  ],
+  image: "",
+  images: [],
+  video: "",
+},
 
     {
       title: "Invoice Management System",
@@ -176,38 +179,34 @@ export const DATA = {
     },
 
     {
-      title: "Digital Guidance Platform (SikshaSarthi Project)",
-      href: "https://github.com/aarthi-kumari/career-guidance",
-      dates: "2025",
-      active: true,
-      description:
-        "Developed a web/mobile platform to guide students in choosing academic streams and careers using aptitude-based quizzes, career mapping, and a location-based college directory. Implemented personalized recommendations and a timeline tracker for admissions and scholarships.",
-      technologies: [
-        "React.js",
-        "React Native",
-        "Node.js/Express",
-        "PostgreSQL",
-        "Firebase",
-        "Google Maps API",
-        "Recharts",
-        "Python (scikit-learn)",
-      ],
-      links: [
-        {
-          type: "Source",
-          href: "https://github.com/aarthi-kumari/career-guidance",
-          icon: <Icons.github className="size-3" />,
-        },
-      ],
-      image: "/projects/sikshasarthi-home.png",
-      images: [
-        "/projects/sikshasarthi-home.png",
-        "/projects/sikshasarthi-college.png",
-        "/projects/sikshasarthi-quiz.png",
-        "/projects/sikshasarthi-timeline.png",
-      ],
-      video: "",
+  title: "TalkTrack - AI Meeting Assistant",
+  href: "https://github.com/aarthi-kumari/TalkTrack",
+  dates: "2026",
+  active: true,
+  description:
+    "A real-time AI meeting assistant that transcribes live calls, generates summaries, and surfaces action items — powered by voice AI and WebSocket-based streaming.",
+  technologies: [
+    "Next.js 14",
+    "Clerk",
+    "LiveKit",
+    "Gemini",
+    "Deepgram",
+    "ElevenLabs",
+    "Socket.IO",
+    "PostgreSQL",
+    "Prisma",
+  ],
+  links: [
+    {
+      type: "Source",
+      href: "https://github.com/aarthi-kumari/TalkTrack",
+      icon: <Icons.github className="size-3" />,
     },
+  ],
+  image: "",
+  images: [],
+  video: "",
+},
 
     
   ],
