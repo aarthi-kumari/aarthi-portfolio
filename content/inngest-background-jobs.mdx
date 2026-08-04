@@ -1,0 +1,65 @@
+---
+title: "Background Jobs with Inngest in a Next.js SaaS"
+publishedAt: "2026-06-20"
+updatedAt: "2026-06-20"
+author: "Aarthi Kumari"
+summary: "Practical patterns I used in Nodebase for durable workflow runs, retries, and multi-step AI jobs without managing my own worker fleet."
+---
+
+When your product runs multi-step AI workflows, HTTP request handlers stop being enough. You need something that can pause, retry, and resume without losing state.
+
+In Nodebase, that layer is **Inngest**.
+
+## The problem with “just call the API”
+
+A naive flow looks like this:
+
+1. User clicks **Run**
+2. Server loops through nodes
+3. Each node calls an LLM or external API
+4. Response is saved
+
+That breaks as soon as:
+
+- an LLM times out
+- a webhook is delayed
+- two steps need different retry policies
+- a run lasts longer than a serverless timeout
+
+## Event-driven runs
+
+Instead of executing everything inline, the UI emits an event:
+
+```ts title="trigger.ts"
+await inngest.send({
+  name: "workflow/run.requested",
+  data: {
+    workflowId,
+    userId,
+  },
+});
+```
+
+A function listens, then executes each node as an isolated step. Failed steps can retry independently. Successful steps stay memoized.
+
+## Patterns that worked well
+
+### 1. One step per side effect
+
+Database writes, model calls, and third-party API requests each get their own `step.run`. That keeps partial failures recoverable.
+
+### 2. Keep payloads small
+
+Pass IDs in events, not huge node graphs. Load fresh state inside the function so reruns stay consistent.
+
+### 3. Surface run status in the product
+
+Users care about “queued / running / failed / completed.” Persist status transitions as steps complete so the UI can poll or subscribe cleanly.
+
+## When I would still use a custom queue
+
+If you need ultra-custom routing, massive throughput, or deep infra control, a dedicated queue (and workers) can still win. For a solo SaaS, Inngest was the better tradeoff: less ops, faster iteration, durable enough for real workflows.
+
+## Takeaway
+
+Background jobs are part of product design. If your AI feature can’t survive retries and timeouts, it isn’t ready for users — no matter how good the prompt is.

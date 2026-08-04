@@ -1,0 +1,74 @@
+---
+title: "Building Nodebase: AI Workflow Automation as a Solo Project"
+publishedAt: "2026-07-15"
+updatedAt: "2026-07-15"
+author: "Aarthi Kumari"
+summary: "How I designed and shipped an AI workflow SaaS end-to-end — visual nodes, background jobs, auth, and billing — as a solo full-stack project."
+---
+
+Nodebase started as a simple idea: what if building AI automations felt as visual as drawing a flowchart, but still production-ready under the hood?
+
+This post covers the architecture decisions that mattered most while building it solo.
+
+## The product shape
+
+Users should be able to:
+
+- Create workflows as connected nodes on a canvas
+- Plug in AI steps without wiring every API by hand
+- Run jobs reliably in the background
+- Upgrade through a real billing flow
+
+That meant the hard parts were not the UI alone — they were **orchestration, auth, data modeling, and async execution**.
+
+## Stack choices
+
+I built Nodebase with:
+
+- **Next.js 15** for the app shell and server components
+- **tRPC** for end-to-end typed APIs
+- **Prisma + PostgreSQL** for the relational model
+- **Vercel AI SDK** for model calls inside nodes
+- **Inngest** for durable background jobs
+- **better-auth** for authentication
+- **Polar** for subscriptions and billing
+
+The goal was a modern SaaS spine without overbuilding infra early.
+
+## Why background jobs mattered
+
+Workflows can fail halfway. Retries, delayed steps, and fan-out are painful if you shove everything into a request lifecycle.
+
+Inngest let me model workflow execution as events and steps:
+
+```ts title="run-workflow.ts"
+inngest.createFunction(
+  { id: "run-workflow" },
+  { event: "workflow/run.requested" },
+  async ({ event, step }) => {
+    const workflow = await step.run("load-workflow", async () => {
+      return db.workflow.findUniqueOrThrow({
+        where: { id: event.data.workflowId },
+      });
+    });
+
+    for (const node of workflow.nodes) {
+      await step.run(`execute-${node.id}`, async () => {
+        return executeNode(node);
+      });
+    }
+  }
+);
+```
+
+That structure made retries and observability much cleaner than a homemade queue.
+
+## Lessons from shipping solo
+
+1. **Type the seams early** — tRPC + Prisma reduced a lot of frontend/backend drift.
+2. **Ship billing sooner than you think** — it forces real product boundaries (plans, limits, entitlements).
+3. **Keep the canvas secondary to the execution model** — pretty nodes mean little if runs are unreliable.
+
+## What’s next
+
+I want to harden node templates, improve failure UX, and add better run history. If you’re building developer tools or AI products, the biggest unlock is treating orchestration as a first-class feature — not an afterthought.

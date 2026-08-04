@@ -1,0 +1,64 @@
+---
+title: "Designing GST/IRN Invoice Flows for Linea"
+publishedAt: "2026-05-10"
+updatedAt: "2026-05-10"
+author: "Aarthi Kumari"
+summary: "How I modeled clients, invoices, and IRN lifecycle states in Linea — and why a clean relational schema mattered more than fancy UI."
+---
+
+Linea is an AI-assisted invoicing platform I built for GST-compliant e-invoice workflows. The interesting part wasn’t just generating invoices from natural language — it was modeling the **lifecycle** correctly.
+
+## Why GST/IRN workflows are tricky
+
+An invoice is not a single row that gets “created” once. In practice you care about:
+
+- draft vs finalized documents
+- client and tax identity details
+- line items and totals
+- IRN generation and cancellation states
+- auditability when something fails mid-flow
+
+If the schema is fuzzy, every feature becomes special-case logic.
+
+## Relational model first
+
+I started with a normalized PostgreSQL schema via Prisma:
+
+- **Workspace / business profile**
+- **Clients**
+- **Invoices**
+- **Invoice line items**
+- **IRN status history**
+
+That separation made it possible to:
+
+- regenerate documents without corrupting history
+- track IRN transitions independently of UI state
+- query invoices by client, status, or period cleanly
+
+## Natural language as an interface, not a database
+
+The chat/NLP layer helps users create invoices faster, but it should never own the source of truth.
+
+Flow:
+
+1. Parse user intent (“create invoice for Aarthi, 2 items…”)
+2. Map to validated domain objects
+3. Persist through REST/API + Prisma
+4. Trigger IRN-related steps only after required fields pass validation
+
+That keeps AI helpful without letting it invent illegal invoice states.
+
+## REST boundaries that helped
+
+I exposed clear resources for clients, invoices, and IRN actions. Even with a Next.js app, treating the backend as resource-oriented APIs made debugging and testing easier.
+
+## What I’d improve next
+
+- Stronger validation around GSTIN and tax breakup edge cases
+- Better failure recovery UX when IRN issuance fails
+- Richer invoice templates without complicating the core schema
+
+## Takeaway
+
+For compliance-heavy products, **schema and state machines beat clever prompts**. AI can speed input, but correctness still lives in your data model.
